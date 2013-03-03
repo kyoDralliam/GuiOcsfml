@@ -50,5 +50,7 @@ let draw lbl target =
 let create ?(text="") () =
   let geometry = Geometry.create (0.,0.) (50.,30.) in
   let font  = new OcsfmlGraphics.font (`File "arial.ttf") in
-  let lbl
+  let lbl = { geometry ; text ; font ; None } in
+  Gc.finalise (fun lbl -> lbl.font#destroy) lbl ;
+  lbl
     
