@@ -1,1 +1,3 @@
-<*.*> : package(OcsfmlGraphics)
+<*.*> : package(ocsfml.graphics)
+<Test/*.*> : package(ocsfml.graphics)
+<Test> : include

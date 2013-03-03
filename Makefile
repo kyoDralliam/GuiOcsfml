@@ -11,3 +11,6 @@ native:
 
 clean:
 	ocamlbuild -clean
+
+test:
+	ocamlbuild -use-ocamlfind Test/test_label.byte

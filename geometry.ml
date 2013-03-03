@@ -28,3 +28,7 @@ let position geom =
 
 let create (x,y) (width,height) =
   { x ; y ; width ; height }
+
+let copy geom =
+   create (position geom) (size geom)
+
