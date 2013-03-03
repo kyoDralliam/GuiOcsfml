@@ -2,8 +2,13 @@ type draw_cache = OcsfmlGraphics.render_texture option
 
 
 type t = 
-    { geometry: Geometry.t ; mutable text: string ; 
-      font: OcsfmlGraphics.font ; mutable draw_cache: draw_cache}
+    { 
+      geometry: Geometry.t ; 
+      mutable text: string ; 
+      font: OcsfmlGraphics.font ; 
+      mutable draw_cache: draw_cache
+    }
+
 
 let invalid_draw_cache lbl =
   lbl.draw_cache <- None
@@ -31,7 +36,7 @@ let set_text lbl t =
   invalid_draw_cache lbl
 
 let move lbl pos =
-  Geometry.mov lbl pos
+  Geometry.move lbl pos
 
 let resize lbl sz =
   Geometry.resize lbl.geometry sz ;
