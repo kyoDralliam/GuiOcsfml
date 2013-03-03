@@ -24,13 +24,16 @@ let get_text_texture lbl =
           ~string:lbl.text
           ~font:lbl.font ()
         in
+        target#clear () ;
         target#draw text ;
+        target#display ;
         lbl.draw_cache <- target ;
         target#get_texture
 
 
 let set_text lbl t =
-  lbl.text <- t
+  lbl.text <- t ;
+  invalid_draw_cache lbl
 
 let move lbl pos =
   Geometry.move lbl pos
@@ -49,3 +52,8 @@ let draw lbl target =
   in
   target#draw sprite
       
+let create ?(text="") () =
+  let geometry = Geometry.create (0.,0.) (50.,30.) in
+  let font  = new OcsfmlGraphics.font (`File "arial.ttf") in
+  let lbl
+    
