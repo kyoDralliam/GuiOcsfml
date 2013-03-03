@@ -25,3 +25,6 @@ let move geom (x,y) =
 
 let position geom =
   (geom.x, geom.y)
+
+let create (x,y) (width,height) =
+  { x ; y ; width ; height }
