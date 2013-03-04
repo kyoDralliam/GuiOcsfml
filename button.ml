@@ -40,7 +40,7 @@ object
       ~position ~size ~fill_color ()
     in
     target#draw shape ;
-    child#draw targeté
+    child#draw target
 
 (*  let texture = get_child_texture btt render_func child in
     let sprite = new OcsfmlGraphics.sprite ~texture ~position () in

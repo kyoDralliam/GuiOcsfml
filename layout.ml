@@ -3,6 +3,7 @@ object(self)
   inherit Widget.widget (Geometry.create (0., 0.) (10.,10.)) as super
   val mutable children : (Widget.widget * float) list = []
 
+
   method update_geometry area =
     super#update_geometry area ;
     let (l,t) = Geometry.position area in

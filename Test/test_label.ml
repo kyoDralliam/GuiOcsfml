@@ -2,6 +2,14 @@ open OcsfmlWindow
 open OcsfmlGraphics
 
 
+class empty_widget =
+object
+  inherit Widget.widget (Geometry.create (0.,0.) (0.,0.))
+
+  method onEvent _ = false
+  method draw _ = ()
+end
+
 let _ = 
   let win = new render_window (VideoMode.create ()) "Label" in
 
@@ -20,9 +28,13 @@ let _ =
 
 
   let layout = new Layout.vertical_layout in
+  layout#add (new empty_widget) 0.25 ;
   layout#add button2 15. ;
+  layout#add (new empty_widget) 0.25 ;
   layout#add button1 5. ;
+  layout#add (new empty_widget) 0.25 ;
   layout#add button3 15. ;
+  layout#add (new empty_widget) 0.25 ;
 
 
   let widget = layout in
@@ -33,7 +45,11 @@ let _ =
     let handle_event e =
       Event.(match e with
         | Resized { width ; height } ->
-            widget#resize (float width, float height)
+            let width,height = (float width, float height) in
+            let vrect = OcsfmlGraphics.({ left = 0.; top = 0.; width; height}) in
+            let v = new OcsfmlGraphics.view (`Rect vrect) in
+            win#set_view v ;
+            widget#resize (width, height)
         | KeyPressed { code = KeyCode.Escape ; _ } -> win#close
         | _ -> ignore (widget#onEvent e)
       )
