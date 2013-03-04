@@ -1,16 +1,19 @@
-class virtual extern_widget = object
+class virtual widget g = 
+object(self)
+  val mutable geometry : Geometry.t = g
+                    
+  method update_geometry area =
+    geometry <- area
+  method resize size =
+    self#update_geometry (Geometry.create (0.,0.) size)
+
+
   method virtual draw : 'a . (#OcsfmlGraphics.render_target as 'a) -> unit
-  method virtual update_geometry : Geometry.t -> unit
-  method virtual geometry : Geometry.t
-  method virtual onEvent : Event.event -> bool
+(*  method virtual onEvent : Event.event -> bool *)
+  method virtual onEvent : OcsfmlWindow.Event.t -> bool
 end
-  
-type widget = 
-  | Label of Label.t
-  | Button of Button.t * widget
-  | Extern of extern_widget
 
-
+(*
 let rec draw widget (target:#OcsfmlGraphics.render_target) = 
   match widget with
     | Label lab -> Label.draw lab target
@@ -47,3 +50,4 @@ let handle_event widget ev =
         handle_mouse_event widget Event.Click (float x, float y)
     | _ -> false
   )
+*)

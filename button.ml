@@ -1,18 +1,19 @@
 type state = Normal | Hovered | Clicked
 
-type t = {
-  mutable geometry: Geometry.t ;
-  mutable state: state ;
-  mutable onClick : unit -> unit
-}
+class button ?(onClick=(fun _ -> ())) child =
+object
+  inherit Widget.widget (Geometry.create (0.,0.) (50.,30.)) as super
+  val mutable state = Normal
+  val mutable onClick = onClick
+  val child : Widget.widget = child
 
-
-let color btt =
-  match btt.state with
-    | Normal -> OcsfmlGraphics.Color.rgb 20 50 20
-    | Hovered -> OcsfmlGraphics.Color.rgb 30 80 30
-    | Clicked -> OcsfmlGraphics.Color.rgb 5 30 5
-
+  val color = 
+    fun state ->
+      match state with
+        | Normal -> OcsfmlGraphics.Color.rgb 20 50 20
+        | Hovered -> OcsfmlGraphics.Color.rgb 30 80 30
+        | Clicked -> OcsfmlGraphics.Color.rgb 5 30 5
+            
 
 (*let get_child_texture btt render_func child =
   match btt.draw_cache with
@@ -31,15 +32,15 @@ let color btt =
 
 
 
-let draw btt (target:#OcsfmlGraphics.render_target) render_func child =
-  let fill_color = color btt in
-  let position = Geometry.position btt.geometry in
-  let size = Geometry.size btt.geometry in
-  let shape = new OcsfmlGraphics.rectangle_shape
-    ~position ~size ~fill_color ()
-  in
-  target#draw shape ;
-  render_func child target
+  method draw target =
+    let fill_color = color state in
+    let position = Geometry.position geometry in
+    let size = Geometry.size geometry in
+    let shape = new OcsfmlGraphics.rectangle_shape
+      ~position ~size ~fill_color ()
+    in
+    target#draw shape ;
+    child#draw targeté
 
 (*  let texture = get_child_texture btt render_func child in
     let sprite = new OcsfmlGraphics.sprite ~texture ~position () in
@@ -51,23 +52,29 @@ let draw btt (target:#OcsfmlGraphics.render_target) render_func child =
     target#draw ~blend_mode:OcsfmlGraphics.BlendMultiply sprite
 *)
 
-let update_geometry btt area update_geometry_func child =
-  btt.geometry <- area ;
-  let x,y = Geometry.position area in
-  let w,h = Geometry.size area in
-  update_geometry_func child 
-    (Geometry.create (x +. 5.,y +. 5.) (w -. 10., h -. 10.))
+  method update_geometry area =
+    super#update_geometry area ;
+    let x,y = Geometry.position area in
+    let w,h = Geometry.size area in
+    child#update_geometry 
+      (Geometry.create (x +. 5.,y +. 5.) (w -. 10., h -. 10.))
+      
 
-let geometry btt =
-  Geometry.copy btt.geometry
+  method onEvent ev =
+    OcsfmlWindow.Event.(
+      match ev with
+        | MouseMoved { x ; y } -> begin
+            if Geometry.isInRect (float x, float y) geometry
+            then state <- Hovered
+            else state <- Normal ; 
+            false
+        end
+        | MouseButtonPressed (_, { x ; y }) -> 
+            Geometry.isInRect (float x, float y) geometry 
+            && (state <- Clicked ; true)
 
-let onEvent btt = function
-  | Event.Click -> (btt.onClick () ; true)
-  | _ -> false
-
-
-let create ?(onClick=(fun _ -> ())) () =
-  let geometry = Geometry.create (0.,0.) (50.,30.) in
-  let btt = { geometry ; state = Normal ; onClick } in
-  btt
-
+        | MouseButtonReleased _ -> 
+            state = Clicked && (state <- Normal ; onClick () ; true)
+        | _ -> false
+    )
+end
