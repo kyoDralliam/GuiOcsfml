@@ -59,7 +59,7 @@ let _ =
             win#set_view v ;
             widget#resize (width, height)
         | KeyPressed { code = KeyCode.Escape ; _ } -> win#close
-        | _ -> ignore (widget#onEvent e)
+        | _ -> ignore (widget#handle_event e)
       )
     in
 

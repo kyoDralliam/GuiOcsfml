@@ -1,4 +1,4 @@
-type state = Normal | Hovered | Clicked
+type state = Normal | Clicked
 
 class button ?(onClick=(fun _ -> ())) child =
 object(self)
@@ -8,10 +8,12 @@ object(self)
   val child : Widget.widget = child
 
   val color = 
-    fun state ->
+    fun state hovered ->
       match state with
-        | Normal -> OcsfmlGraphics.Color.rgb 20 50 20
-        | Hovered -> OcsfmlGraphics.Color.rgb 30 80 30
+        | Normal -> 
+            if hovered
+            then OcsfmlGraphics.Color.rgb 20 50 20
+            else OcsfmlGraphics.Color.rgb 30 80 30
         | Clicked -> OcsfmlGraphics.Color.rgb 5 30 5
             
 
@@ -33,7 +35,7 @@ object(self)
 
 
   method draw target =
-    let fill_color = color state in
+    let fill_color = color state hovered in
     let position = Geometry.position geometry in
     let size = Geometry.size geometry in
     let shape = new OcsfmlGraphics.rectangle_shape
@@ -63,22 +65,11 @@ object(self)
       (Geometry.create (x +. 5.,y +. 5.) (w -. 10., h -. 10.))
       
 
-  method onEvent ev =
-    OcsfmlWindow.Event.(
+  method private on_event ev =
+    Event.(
       match ev with
-        | MouseMoved { x ; y } -> begin
-          if state <> Clicked
-          then
-            if Geometry.isInRect (float x, float y) geometry
-            then state <- Hovered
-            else state <- Normal ; 
-          false
-        end
-        | MouseButtonPressed (_, { x ; y }) -> 
-            Geometry.isInRect (float x, float y) geometry 
-            && (self#press; true)
-
-        | MouseButtonReleased _ -> 
+        | Pressed -> (self#press; true)
+        | Released -> 
             state = Clicked && (self#release; true)
         | _ -> false
     )

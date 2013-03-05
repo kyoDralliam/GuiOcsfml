@@ -53,7 +53,7 @@ object(self)
     target#draw text ;
     target#set_view old_view
 
-  method onEvent _ = 
+  method private on_event _ = 
     false
       
 end

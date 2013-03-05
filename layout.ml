@@ -34,8 +34,10 @@ object(self)
       = widget#draw target in
     List.iter draw children
 
-  method onEvent ev =
-    List.exists (fun (wid,_) -> wid#onEvent ev) children
+  method handle_event sfev =
+    List.exists (fun (wid,_) -> wid#handle_event sfev) children
+
+  method private on_event _ = false
 
 end
 

@@ -1,23 +1,41 @@
 class virtual widget g = 
 object(self)
   val mutable geometry : Geometry.t = g
+  val mutable hovered = false
                     
   method update_geometry area =
     geometry <- area
   method resize size =
     self#update_geometry (Geometry.create (0.,0.) size)
 
-
   method virtual draw : 'a . (#OcsfmlGraphics.render_target as 'a) -> unit
-(*  method virtual onEvent : Event.event -> bool *)
-  method virtual onEvent : OcsfmlWindow.Event.t -> bool
+  method private virtual on_event : Event.event -> bool
+
+  method handle_event sfev =
+    OcsfmlWindow.Event.( match sfev with
+      | MouseMoved { x ; y } ->
+          if hovered && not (Geometry.isInRect (float x, float y) geometry)
+          then (hovered <- false ; self#on_event Event.MouseLeave)
+          else if not hovered && Geometry.isInRect (float x, float y) geometry
+          then (hovered <- true  ; self#on_event Event.MouseEnter)
+          else false
+      | MouseButtonPressed (_, { x ; y }) ->
+          Geometry.isInRect (float x, float y) geometry
+          && self#on_event Event.Pressed
+      | MouseButtonReleased _ ->
+          self#on_event Event.Released
+      | _ -> false
+    )
+
+
+
 end
 
 let empty_widget =
 object
   inherit widget (Geometry.create (0.,0.) (0.,0.))
 
-  method onEvent _ = false
+  method private on_event _ = false
   method draw _ = ()
 end
 

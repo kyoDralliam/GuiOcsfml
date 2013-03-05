@@ -3,6 +3,7 @@
 
 type event = 
   | Resize of float * float 
-  | Click  
-  | Hover 
-  | Selected
+  | MouseEnter
+  | MouseLeave
+  | Pressed
+  | Released
