@@ -12,6 +12,7 @@ end
 
 let _ = 
   let win = new render_window (VideoMode.create ()) "Label" in
+  win#set_framerate_limit 60 ;
 
   let label1 = new Label.label ~text:"Hello Gui Ocsfml" () in
   let button1 = new Button.button 
@@ -28,13 +29,13 @@ let _ =
 
 
   let layout = new Layout.vertical_layout in
-  layout#add (new empty_widget) 0.25 ;
-  layout#add button2 15. ;
+  layout#add (new empty_widget) 15. ;
+  layout#add button2 5. ;
   layout#add (new empty_widget) 0.25 ;
   layout#add button1 5. ;
   layout#add (new empty_widget) 0.25 ;
-  layout#add button3 15. ;
-  layout#add (new empty_widget) 0.25 ;
+  layout#add button3 5. ;
+  layout#add (new empty_widget) 15. ;
 
 
   let widget = layout in

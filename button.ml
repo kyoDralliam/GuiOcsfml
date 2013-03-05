@@ -65,7 +65,7 @@ object
       match ev with
         | MouseMoved { x ; y } -> begin
             if Geometry.isInRect (float x, float y) geometry
-            then state <- Hovered
+            then (if state <> Clicked then state <- Hovered)
             else state <- Normal ; 
             false
         end
