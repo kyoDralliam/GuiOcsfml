@@ -23,7 +23,6 @@ object(self)
     let old_view = new OcsfmlGraphics.view (`Copy target#get_view) in
     let (left,top) = Geometry.position geometry in
     let width,height = Geometry.size geometry in
-    let position = (left +. width /. 2., left +. height /. 2.) in
 
     let view = OcsfmlGraphics.(
       new view (`Rect { left = 0. ; top = 0.; width ; height })
@@ -40,6 +39,7 @@ object(self)
     in
     view#set_viewport ratioRect ;
     
+    let position = (width /. 2., height /. 2.) in
     let text = new OcsfmlGraphics.text 
       ~string:text
       ~character_size:10

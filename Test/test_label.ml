@@ -27,18 +27,33 @@ let _ =
   let label3 = new Label.label ~text:"Do nothing" () in
   let button3 = new Button.button (label3 :> Widget.widget) in
 
-
-  let layout = new Layout.vertical_layout in
-  layout#add (new empty_widget) 15. ;
-  layout#add button2 5. ;
-  layout#add (new empty_widget) 0.25 ;
-  layout#add button1 5. ;
-  layout#add (new empty_widget) 0.25 ;
-  layout#add button3 5. ;
-  layout#add (new empty_widget) 15. ;
+  let label4 = new Label.label ~text:"Je suis un contestataire" () in
+  let button4 = new Button.button (label4 :> Widget.widget) in 
 
 
-  let widget = layout in
+  let left_layout = new Layout.vertical_layout in
+  left_layout#add (new empty_widget) 15.  ;
+  left_layout#add button2            5.   ;
+  left_layout#add (new empty_widget) 0.25 ;
+  left_layout#add button1            5.   ;
+  left_layout#add (new empty_widget) 0.25 ;
+  left_layout#add button3            5.   ;
+  left_layout#add (new empty_widget) 15.  ;
+
+  let right_layout = new Layout.vertical_layout in 
+  right_layout#add (new empty_widget) 15.  ;
+  right_layout#add button4            15.5 ;
+  right_layout#add (new empty_widget) 15.  ;
+  
+  let hlayout = new Layout.horizontal_layout in 
+  hlayout#add (new empty_widget) 1.   ;
+  hlayout#add left_layout        1.   ;
+  hlayout#add (new empty_widget) 0.03 ;
+  hlayout#add right_layout       1.   ;
+  hlayout#add (new empty_widget) 1.   ;
+  
+
+  let widget = hlayout in
 
 
 
