@@ -1,0 +1,5 @@
+description="GuiOcsfml - a GUI frontend for Ocsfml"
+requires="ocsfml.graphics"
+version="0.1"
+archive(byte)="guiOcsfml.cma"
+archive(native)="guiOcsfml.cmxa"

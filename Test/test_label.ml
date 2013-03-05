@@ -2,14 +2,6 @@ open OcsfmlWindow
 open OcsfmlGraphics
 
 
-class empty_widget =
-object
-  inherit Widget.widget (Geometry.create (0.,0.) (0.,0.))
-
-  method onEvent _ = false
-  method draw _ = ()
-end
-
 let _ = 
   let win = new render_window (VideoMode.create ()) "Label" in
   win#set_framerate_limit 60 ;
@@ -32,25 +24,25 @@ let _ =
 
 
   let left_layout = new Layout.vertical_layout in
-  left_layout#add (new empty_widget) 15.  ;
+  left_layout#add (Widget.empty_widget) 15.  ;
   left_layout#add button2            5.   ;
-  left_layout#add (new empty_widget) 0.25 ;
+  left_layout#add (Widget.empty_widget) 0.25 ;
   left_layout#add button1            5.   ;
-  left_layout#add (new empty_widget) 0.25 ;
+  left_layout#add (Widget.empty_widget) 0.25 ;
   left_layout#add button3            5.   ;
-  left_layout#add (new empty_widget) 15.  ;
+  left_layout#add (Widget.empty_widget) 15.  ;
 
   let right_layout = new Layout.vertical_layout in 
-  right_layout#add (new empty_widget) 15.  ;
+  right_layout#add (Widget.empty_widget) 15.  ;
   right_layout#add button4            15.5 ;
-  right_layout#add (new empty_widget) 15.  ;
+  right_layout#add (Widget.empty_widget) 15.  ;
   
   let hlayout = new Layout.horizontal_layout in 
-  hlayout#add (new empty_widget) 1.   ;
+  hlayout#add (Widget.empty_widget) 1.   ;
   hlayout#add left_layout        1.   ;
-  hlayout#add (new empty_widget) 0.03 ;
+  hlayout#add (Widget.empty_widget) 0.03 ;
   hlayout#add right_layout       1.   ;
-  hlayout#add (new empty_widget) 1.   ;
+  hlayout#add (Widget.empty_widget) 1.   ;
   
 
   let widget = hlayout in

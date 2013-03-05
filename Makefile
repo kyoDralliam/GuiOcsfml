@@ -1,16 +1,30 @@
+BYTE:=guiOcsfml.cma
+NATIVE:=guiOcsfml.cmxa
 
 
 
-all: byte
+all: build
+
+build:
+	ocamlbuild -use-ocamlfind $(BYTE) $(NATIVE)
 
 byte:
-	ocamlbuild -use-ocamlfind widget.cmo
+	ocamlbuild -use-ocamlfind $(BYTE) 
 
 native:
-	ocamlbuild -use-ocamlfind widget.cmxa
+	ocamlbuild -use-ocamlfind $(NATIVE)
 
 clean:
 	ocamlbuild -clean
 
+install: build
+	ocamlfind install guiocsfml META $(BYTE:%=_build/%) $(NATIVE:%=_build/%)
+
+uninstall:
+	ocamlfind remove guiocsfml
+
 test:
 	ocamlbuild -use-ocamlfind Test/test_label.byte
+
+
+.PHONY: clean
