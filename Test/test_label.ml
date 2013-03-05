@@ -23,6 +23,8 @@ let _ =
   let button4 = new Button.button (label4 :> Widget.widget) in 
 
 
+  let line_edit = new LineEdit.line_edit in
+
   let left_layout = new Layout.vertical_layout in
   left_layout#add (Widget.empty_widget) 15.  ;
   left_layout#add button2            5.   ;
@@ -34,7 +36,9 @@ let _ =
 
   let right_layout = new Layout.vertical_layout in 
   right_layout#add (Widget.empty_widget) 15.  ;
-  right_layout#add button4            15.5 ;
+  right_layout#add button4            14. ;
+  right_layout#add (Widget.empty_widget) 0.5  ;
+  right_layout#add line_edit          1. ;
   right_layout#add (Widget.empty_widget) 15.  ;
   
   let hlayout = new Layout.horizontal_layout in 

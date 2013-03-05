@@ -8,6 +8,8 @@ object(self)
   method resize size =
     self#update_geometry (Geometry.create (0.,0.) size)
 
+
+
   method virtual draw : 'a . (#OcsfmlGraphics.render_target as 'a) -> unit
   method private virtual on_event : Event.event -> bool
 
@@ -24,6 +26,8 @@ object(self)
           && self#on_event Event.Pressed
       | MouseButtonReleased _ ->
           self#on_event Event.Released
+      | TextEntered { unicode } -> 
+          self#on_event (Event.TextEntered unicode)
       | _ -> false
     )
 

@@ -7,3 +7,4 @@ type event =
   | MouseLeave
   | Pressed
   | Released
+  | TextEntered of int
