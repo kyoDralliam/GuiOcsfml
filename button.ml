@@ -1,7 +1,7 @@
 type state = Normal | Hovered | Clicked
 
 class button ?(onClick=(fun _ -> ())) child =
-object
+object(self)
   inherit Widget.widget (Geometry.create (0.,0.) (50.,30.)) as super
   val mutable state = Normal
   val mutable onClick = onClick
@@ -42,16 +42,19 @@ object
     target#draw shape ;
     child#draw target
 
-(*  let texture = get_child_texture btt render_func child in
-    let sprite = new OcsfmlGraphics.sprite ~texture ~position () in
-    let clipping_shape = new OcsfmlGraphics.rectangle_shape
-    ~position ~size 
-    ~fill_color:(OcsfmlGraphics.Color.rgba 255 255 255 255) ()
-    in
-    target#draw clipping_shape ;
-    target#draw ~blend_mode:OcsfmlGraphics.BlendMultiply sprite
-*)
+  method press = state <- Clicked
+  method release = state <- Normal ; onClick ()
 
+  (*  let texture = get_child_texture btt render_func child in
+      let sprite = new OcsfmlGraphics.sprite ~texture ~position () in
+      let clipping_shape = new OcsfmlGraphics.rectangle_shape
+      ~position ~size 
+      ~fill_color:(OcsfmlGraphics.Color.rgba 255 255 255 255) ()
+      in
+      target#draw clipping_shape ;
+      target#draw ~blend_mode:OcsfmlGraphics.BlendMultiply sprite
+*)
+    
   method update_geometry area =
     super#update_geometry area ;
     let x,y = Geometry.position area in
@@ -64,17 +67,19 @@ object
     OcsfmlWindow.Event.(
       match ev with
         | MouseMoved { x ; y } -> begin
+          if state <> Clicked
+          then
             if Geometry.isInRect (float x, float y) geometry
-            then (if state <> Clicked then state <- Hovered)
+            then state <- Hovered
             else state <- Normal ; 
-            false
+          false
         end
         | MouseButtonPressed (_, { x ; y }) -> 
             Geometry.isInRect (float x, float y) geometry 
-            && (state <- Clicked ; true)
+            && (self#press; true)
 
         | MouseButtonReleased _ -> 
-            state = Clicked && (state <- Normal ; onClick () ; true)
+            state = Clicked && (self#release; true)
         | _ -> false
     )
 end
