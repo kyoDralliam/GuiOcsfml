@@ -13,6 +13,15 @@ object(self)
   method virtual onEvent : OcsfmlWindow.Event.t -> bool
 end
 
+let empty_widget =
+object
+  inherit widget (Geometry.create (0.,0.) (0.,0.))
+
+  method onEvent _ = false
+  method draw _ = ()
+end
+
+
 (*
 let rec draw widget (target:#OcsfmlGraphics.render_target) = 
   match widget with
