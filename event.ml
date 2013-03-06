@@ -8,3 +8,4 @@ type event =
   | Pressed
   | Released
   | TextEntered of int
+  | KeyPressed of OcsfmlWindow.KeyCode.t

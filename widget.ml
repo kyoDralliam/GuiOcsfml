@@ -8,6 +8,7 @@ class virtual widget g =
 object(self)
   val mutable geometry : Geometry.t = g
   val mutable hovered = false
+  val mutable focused = false
                     
   method update_geometry area =
     geometry <- area
@@ -19,9 +20,13 @@ object(self)
   method virtual draw : 'a . (#OcsfmlGraphics.render_target as 'a) -> unit
   method private virtual on_event : Event.event -> bool
 
-  method gain_focus : FocusWitness.t -> unit = fun _ -> ()
+  method gain_focus : FocusWitness.t -> unit = 
+    fun _ -> 
+      focused <- true
 
-  method lose_focus : FocusWitness.t -> unit = fun _ -> ()
+  method lose_focus : FocusWitness.t -> unit = 
+    fun _ -> 
+      focused <- false
 
   method handle_event sfev =
     OcsfmlWindow.Event.( match sfev with
@@ -37,7 +42,11 @@ object(self)
       | MouseButtonReleased _ ->
           self#on_event Event.Released
       | TextEntered { unicode } -> 
-          self#on_event (Event.TextEntered unicode)
+          focused 
+          && self#on_event (Event.TextEntered unicode)
+      | KeyPressed { code ; _ } ->
+          focused
+          && self#on_event (Event.KeyPressed code)
       | _ -> false
     )
 
