@@ -71,7 +71,7 @@ object(self)
 
   method private on_event ev =
     Event.(match ev with
-      | TextEntered c -> (
+      | TextEntered c -> begin
         if c = 8 (* backspace *) && text <> ""
         then
           let length = String.length text in
@@ -84,12 +84,15 @@ object(self)
             else text;
           cursor <- max 0 (cursor - 1)
         else if c <> 8 && c < 255
-        then begin
-          text <- text ^ String.make 1 (Char.chr c) ;
-          cursor <- cursor + 1
-        end ;
-        true
-      )
+        then 
+          let length = String.length text in
+          text <- 
+            String.sub text 0 cursor ^ 
+            String.make 1 (Char.chr c) ^ 
+            String.sub text cursor (length - cursor) ;
+          cursor <- min (length + 1) (cursor + 1)
+      end ;
+          true
       | Pressed ->
           Widget.Focus.grab_focus (self :> Widget.widget)
       | KeyPressed code ->
