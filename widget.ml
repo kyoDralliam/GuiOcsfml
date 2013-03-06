@@ -9,7 +9,8 @@ object(self)
   val mutable geometry : Geometry.t = g
   val mutable hovered = false
   val mutable focused = false
-                    
+  val mutable listen_mouse_moves = None
+       
   method update_geometry area =
     geometry <- area
   method resize size =
@@ -28,14 +29,31 @@ object(self)
     fun _ -> 
       focused <- false
 
+  method private listen_mouse_moves b = 
+    if b 
+    then listen_mouse_moves <- Some (-1., -1.)
+    else listen_mouse_moves <- None
+
   method handle_event sfev =
     OcsfmlWindow.Event.( match sfev with
       | MouseMoved { x ; y } ->
-          if hovered && not (Geometry.isInRect (float x, float y) geometry)
-          then (hovered <- false ; self#on_event Event.MouseLeave)
-          else if not hovered && Geometry.isInRect (float x, float y) geometry
-          then (hovered <- true  ; self#on_event Event.MouseEnter)
-          else false
+          let (x, y) as coords = (float x, float y) in 
+          let captured = 
+            if hovered && not (Geometry.isInRect coords geometry)
+            then (hovered <- false ; self#on_event Event.MouseLeave)
+            else if not hovered && Geometry.isInRect coords geometry
+            then (hovered <- true  ; self#on_event Event.MouseEnter)
+            else false
+          in 
+          begin match listen_mouse_moves with 
+            | None -> captured 
+            | Some (-1., -1.) -> 
+                listen_mouse_moves <- Some coords;
+                self#on_event (Event.MouseMoved (0., 0.)) || captured
+            | Some (x0, y0) -> 
+                listen_mouse_moves <- Some coords;
+                self#on_event (Event.MouseMoved (x -. x0, y -. y0)) || captured
+          end
       | MouseButtonPressed (_, { x ; y }) ->
           Geometry.isInRect (float x, float y) geometry
           && self#on_event Event.Pressed
