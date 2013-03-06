@@ -1,3 +1,9 @@
+module FocusWitness =
+struct
+  type t = unit
+  let focus_witness : t = ()
+end
+
 class virtual widget g = 
 object(self)
   val mutable geometry : Geometry.t = g
@@ -12,6 +18,10 @@ object(self)
 
   method virtual draw : 'a . (#OcsfmlGraphics.render_target as 'a) -> unit
   method private virtual on_event : Event.event -> bool
+
+  method gain_focus : FocusWitness.t -> unit = fun _ -> ()
+
+  method lose_focus : FocusWitness.t -> unit = fun _ -> ()
 
   method handle_event sfev =
     OcsfmlWindow.Event.( match sfev with
@@ -31,8 +41,6 @@ object(self)
       | _ -> false
     )
 
-
-
 end
 
 let empty_widget =
@@ -41,6 +49,25 @@ object
 
   method private on_event _ = false
   method draw _ = ()
+end
+
+module Focus =
+struct
+      
+  let focused_widget_opt : widget option ref = ref None
+  let focused_widget () = 
+    !focused_widget_opt
+
+  let grab_focus (widget : #widget) = 
+    begin match !focused_widget_opt with 
+      | None -> ()
+      | Some focused_widget -> 
+          focused_widget#lose_focus FocusWitness.focus_witness
+    end;
+    focused_widget_opt := Some widget;
+    widget#gain_focus FocusWitness.focus_witness;
+    true
+
 end
 
 
