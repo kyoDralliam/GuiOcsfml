@@ -44,23 +44,32 @@ object(self)
     in
     view#set_viewport ratioRect ;
     
-    let position = (0., height /. 2.) in
-    let text = new OcsfmlGraphics.text 
+    let printable_text = new OcsfmlGraphics.text 
       ~string:text
       ~character_size:10
       ~font:font
-      ~color:OcsfmlGraphics.Color.black
-      ~position () 
+      ~color:OcsfmlGraphics.Color.black () 
     in
-    let bounds = text#get_local_bounds in
+    let (lastX,lastY) = printable_text#find_character_pos cursor in
+    let position = 
+      if lastX > (width -. 1.5)
+      then (width -. lastX -. 1.5, height /. 2.)
+      else (0., height /. 2.)
+    in
+    let bounds = printable_text#get_local_bounds in
     let center = OcsfmlGraphics.(0., bounds.height /. 2.) in
-    text#set_origin_v center ;
+    printable_text#set_position_v position ;
+    printable_text#set_origin_v center ;
     target#set_view view ;
-    target#draw text ;
+    target#draw printable_text ;
 
     let vertical_bar = 
-      let position = text#find_character_pos cursor in
-      let size = (1., height -. 1.) in
+      let position = 
+        if lastX > width -. 1.5
+        then (width -. 1.5, 2.)
+        else (lastX, 2.) 
+      in
+      let size = (1., height -. 2.) in
       new OcsfmlGraphics.rectangle_shape
         ~fill_color:OcsfmlGraphics.Color.black
         ~size

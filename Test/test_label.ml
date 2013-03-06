@@ -3,8 +3,10 @@ open OcsfmlGraphics
 
 
 let _ = 
-  let win = new render_window (VideoMode.create ()) "Label" in
-  win#set_framerate_limit 60 ;
+  let win1 = new render_window (VideoMode.create ()) "Label" in
+  let win2 = new render_window (VideoMode.create ()) "Label" in
+  win1#set_framerate_limit 60 ;
+  win2#set_framerate_limit 60 ;
 
   let label1 = new Label.label ~text:"Hello Gui Ocsfml" () in
   let button1 = new Button.button 
@@ -13,7 +15,7 @@ let _ =
   in
 
   let label2 = new Label.label ~text:"Goodbye Gui Ocsfml" () in
-  let button2 = new Button.button ~onClick:(fun () -> win#close) (label2 :> Widget.widget) in
+  let button2 = new Button.button ~onClick:(fun () -> win1#close) (label2 :> Widget.widget) in
 
 
   let label3 = new Label.label ~text:"Do nothing" () in
@@ -54,7 +56,7 @@ let _ =
 
 
   let rec loop () =
-    let handle_event e =
+    let handle_event (win:#OcsfmlGraphics.render_window) e =
       Event.(match e with
         | Resized { width ; height } ->
             let width,height = (float width, float height) in
@@ -67,18 +69,22 @@ let _ =
       )
     in
 
-    let rec event_loop () =
+    let rec event_loop (win:#OcsfmlGraphics.render_window) =
       match win#poll_event with
-        | Some e -> (handle_event e ; event_loop ())
+        | Some e -> (handle_event win e ; event_loop win)
         | None -> ()
     in
     
-    if win#is_open
+    if win1#is_open && win2#is_open
     then (
-      event_loop () ;
-      win#clear () ;
-      widget#draw win ;
-      win#display ;
+      event_loop win1 ;
+      event_loop win2 ;
+      win1#clear () ;
+      win2#clear () ;
+      widget#draw win1 ;
+      widget#draw win2 ;
+      win1#display ;
+      win2#display ;
       loop ()
     )
   in loop () 
