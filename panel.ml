@@ -2,7 +2,7 @@ let default_background_color = ref (OcsfmlGraphics.Color.rgb 255 255 255)
 
 class panel 
   ?(geometry = Geometry.create (0.,0.) (10., 10.))
-  ?(child = Widget.empty_widget)
+  ?(child  = Widget.empty_widget)
   ?(dragable = false)
   ?(background_color = !default_background_color)
   () =
@@ -31,18 +31,20 @@ object (self)
 
   method set_dragable b = dragable <- b 
 
+  method handle_event sfev = 
+    child#handle_event sfev || super#handle_event sfev
 
   method private on_event event = 
     match event with 
-      | Event.Pressed -> self#listen_mouse_moves true ; false
-      | Event.Released -> self#listen_mouse_moves false ; false
+      | Event.Pressed -> self#listen_mouse_moves true ; true
+      | Event.Released -> self#listen_mouse_moves false ; true
       | Event.MouseMoved (delta_x, delta_y) ->
           let area = { geometry with 
             Geometry.x = geometry.Geometry.x +. delta_x ; 
             Geometry.y = geometry.Geometry.y +. delta_y 
           } in
           self#update_geometry area ;
-          true
+          false
       | _ -> false
    
 end
