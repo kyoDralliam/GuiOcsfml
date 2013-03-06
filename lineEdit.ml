@@ -79,10 +79,11 @@ object(self)
             if cursor = length
             then String.sub text 0 (length - 1)
             else if cursor <> 0
-            else String.sub text 0 (cursor - 1) ^ 
-              String.sub text cursor (length - cursor) ;
+            then String.sub text 0 (cursor - 1) ^ 
+              String.sub text cursor (length - cursor) 
+            else text;
           cursor <- max 0 (cursor - 1)
-        else if c <> 8
+        else if c <> 8 && c < 255
         then begin
           text <- text ^ String.make 1 (Char.chr c) ;
           cursor <- cursor + 1
