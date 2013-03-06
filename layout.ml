@@ -50,9 +50,7 @@ object(self)
 
 
   method draw target =
-    let draw { widget ; _ }
-      = widget#draw target in
-    List.iter draw children
+    List.iter (fun { widget ; _ } -> widget#draw target) children
 
   method handle_event sfev =
     List.exists (fun { widget ; _ } -> widget#handle_event sfev) children

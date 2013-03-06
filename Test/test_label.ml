@@ -62,7 +62,7 @@ let _ =
             let v = new OcsfmlGraphics.view (`Rect vrect) in
             win#set_view v ;
             widget#resize (width, height)
-        | KeyPressed { code = KeyCode.Escape ; _ } -> win#close
+        | Closed | KeyPressed { code = KeyCode.Escape ; _ } -> win#close
         | _ -> ignore (widget#handle_event e)
       )
     in
