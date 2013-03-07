@@ -49,8 +49,8 @@ object(self)
     self#update_geometry geometry
 
 
-  method draw target =
-    List.iter (fun { widget ; _ } -> widget#draw target) children
+  method draw target themeset =
+    List.iter (fun { widget ; _ } -> widget#draw target themeset) children
 
   method handle_event sfev =
     List.exists (fun { widget ; _ } -> widget#handle_event sfev) children

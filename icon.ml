@@ -1,4 +1,4 @@
-class icon ?(image=new OcsfmlGraphics.texture `None) () =
+class icon ?(image=new OcsfmlGraphics.texture `None) () git=
 object(self)
   inherit Widget.widget (Geometry.create (0.,0.) (50.,50.)) as super
   val image = new OcsfmlGraphics.texture (`Copy image)
@@ -6,7 +6,7 @@ object(self)
 
   method image = image
 
-  method draw target =
+  method draw target themeset =
     let imw,imh = 
       let w,h = image#get_size in
       float w, float h

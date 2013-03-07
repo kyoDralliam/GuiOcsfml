@@ -34,7 +34,7 @@ object(self)
 
 
 
-  method draw target =
+  method draw target themeset =
     let fill_color = color state hovered in
     let position = Geometry.position geometry in
     let size = Geometry.size geometry in
@@ -42,7 +42,7 @@ object(self)
       ~position ~size ~fill_color ()
     in
     target#draw shape ;
-    child#draw target
+    child#draw target themeset
 
   method press = state <- Clicked
   method release = state <- Normal ; onClick ()

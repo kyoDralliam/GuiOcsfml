@@ -11,10 +11,11 @@ object (self)
   val mutable child = child
   val mutable dragable = dragable
   val mutable background_color = background_color
+  initializer self#update_geometry geometry
 
-
-  method draw : 'a . (#OcsfmlGraphics.render_target as 'a) -> unit =
-    fun target ->
+  method draw : 
+    'a . (#OcsfmlGraphics.render_target as 'a) -> Theme.Set.t -> unit =
+    fun target themeset ->
       let fill_color = background_color in
       let position = Geometry.position geometry in
       let size = Geometry.size geometry in
@@ -22,7 +23,7 @@ object (self)
         ~position ~size ~fill_color ()
       in
       target#draw shape ;
-      child#draw target
+      child#draw target themeset
 
 
   method update_geometry area = 

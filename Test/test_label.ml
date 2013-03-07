@@ -8,20 +8,37 @@ let _ =
   win1#set_framerate_limit 60 ;
   win2#set_framerate_limit 60 ;
 
-  let label1 = new Label.label ~text:"Hello Gui Ocsfml" () in
+  let my_themeset = ref (Theme.Set.create ()) in
+  
+  let (my_theme, my_theme_id) = Theme.create () in
+
+  let font = new OcsfmlGraphics.font (`File "Arial.ttf") in
+  
+  my_theme := Theme.add_font !my_theme Theme.GlobalAttribute.font font ;
+  my_theme := Theme.add_int !my_theme Theme.GlobalAttribute.character_size 10 ;
+  my_theme := Theme.add_color 
+    !my_theme Label.LabelAttribute.label_text_color (OcsfmlGraphics.Color.white);
+
+  font#destroy ;
+
+  my_themeset := Theme.Set.add !my_themeset my_theme_id !my_theme ;
+  
+
+
+  let label1 = new Label.label ~text:"Hello Gui Ocsfml" my_theme_id in
   let button1 = new Button.button 
     ~onClick:(fun () -> print_string "Hello\n" ; flush stdout)
     (label1 :> Widget.widget) 
   in
 
-  let label2 = new Label.label ~text:"Goodbye Gui Ocsfml" () in
+  let label2 = new Label.label ~text:"Goodbye Gui Ocsfml" my_theme_id in
   let button2 = new Button.button ~onClick:(fun () -> win1#close) (label2 :> Widget.widget) in
 
 
-  let label3 = new Label.label ~text:"Do nothing" () in
+  let label3 = new Label.label ~text:"Do nothing" my_theme_id in
   let button3 = new Button.button (label3 :> Widget.widget) in
 
-  let label4 = new Label.label ~text:"Je suis un contestataire" () in
+  let label4 = new Label.label ~text:"Je suis un contestataire" my_theme_id in
   let button4 = new Button.button (label4 :> Widget.widget) in 
 
 
@@ -66,7 +83,7 @@ let _ =
             widget#resize (width, height)
         | Closed | KeyPressed { code = KeyCode.Escape ; _ } -> win#close
         | _ -> ignore (widget#handle_event e)
-      )
+       )
     in
 
     let rec event_loop (win:#OcsfmlGraphics.render_window) =
@@ -81,10 +98,10 @@ let _ =
       event_loop win2 ;
       win1#clear () ;
       win2#clear () ;
-      widget#draw win1 ;
-      widget#draw win2 ;
+      widget#draw win1 !my_themeset ;
+      widget#draw win2 !my_themeset ;
       win1#display ;
       win2#display ;
       loop ()
     )
-  in loop () 
+  in loop ()

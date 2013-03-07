@@ -12,7 +12,7 @@ object(self)
   method update_geometry area =
     super#update_geometry area
 
-  method draw target =
+  method draw target themeset =
     let old_view = new OcsfmlGraphics.view (`Copy target#get_view) in
     let left,top = Geometry.position geometry in
     let width,height = Geometry.size geometry in

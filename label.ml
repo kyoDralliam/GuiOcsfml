@@ -1,25 +1,33 @@
+module LabelAttribute =
+struct
+  let label_text_color = Theme.Attribute.Identifier.create ()
+end
 
-class label ?(text="") () =
+
+
+class label ?(text="") theme =
 object(self)
   inherit Widget.widget (Geometry.create (0.,0.) (50.,30.)) as super
 
   val mutable text = text
-  val mutable font = new OcsfmlGraphics.font (`File "Arial.ttf") 
-  initializer  Gc.finalise (fun lbl -> lbl#font#destroy) self ;
+  val theme_id = theme
+(*  val mutable font = new
+  initializer  Gc.finalise (fun lbl -> lbl#font#destroy) self ; *)
 
   method set_text t =
     text <- t
   method text = text
 
-  method set_font f =
-    font#destroy ;
-    font <- f
-  method font = font
-
   method update_geometry area =
     super#update_geometry area
 
-  method draw target =
+  method draw target themeset =
+    let theme = Theme.Set.find themeset theme_id in
+    let font = Theme.get_font theme (Theme.GlobalAttribute.font) in
+    let character_size = 
+      Theme.get_int theme (Theme.GlobalAttribute.character_size) in
+    let color = Theme.get_color theme (LabelAttribute.label_text_color) in
+
     let old_view = new OcsfmlGraphics.view (`Copy target#get_view) in
     let left,top = Geometry.position geometry in
     let width,height = Geometry.size geometry in
@@ -42,8 +50,9 @@ object(self)
     let position = (width /. 2., height /. 2.) in
     let text = new OcsfmlGraphics.text 
       ~string:text
-      ~character_size:10
-      ~font:font
+      ~color
+      ~character_size
+      ~font
       ~position () 
     in
     let bounds = text#get_local_bounds in

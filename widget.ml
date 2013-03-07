@@ -18,7 +18,8 @@ object(self)
 
 
 
-  method virtual draw : 'a . (#OcsfmlGraphics.render_target as 'a) -> unit
+  method virtual draw : 
+      'a . (#OcsfmlGraphics.render_target as 'a) -> Theme.Set.t -> unit
   method private virtual on_event : Event.event -> bool
 
   method gain_focus : FocusWitness.t -> unit = 
@@ -75,7 +76,7 @@ object
   inherit widget (Geometry.create (0.,0.) (0.,0.))
 
   method private on_event _ = false
-  method draw _ = ()
+  method draw _ _ = ()
 end
 
 module Focus =
