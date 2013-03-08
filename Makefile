@@ -24,7 +24,7 @@ uninstall:
 	ocamlfind remove guiocsfml
 
 test:
-	ocamlbuild -use-ocamlfind Test/test_label.byte Test/test_panel.native
+	ocamlbuild -use-ocamlfind Test/test_label.native Test/test_panel.native
 
 
 .PHONY: clean

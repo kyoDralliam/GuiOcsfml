@@ -1,6 +1,6 @@
 module LabelAttribute =
 struct
-  let label_text_color = Theme.Attribute.Identifier.create ()
+  let text_color = Theme.Attribute.Identifier.create ()
 end
 
 
@@ -26,7 +26,7 @@ object(self)
     let font = Theme.get_font theme (Theme.GlobalAttribute.font) in
     let character_size = 
       Theme.get_int theme (Theme.GlobalAttribute.character_size) in
-    let color = Theme.get_color theme (LabelAttribute.label_text_color) in
+    let color = Theme.get_color theme (LabelAttribute.text_color) in
 
     let old_view = new OcsfmlGraphics.view (`Copy target#get_view) in
     let left,top = Geometry.position geometry in

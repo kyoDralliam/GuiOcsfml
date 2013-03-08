@@ -31,6 +31,7 @@ struct
     | Color of OcsfmlGraphics.Color.t
     | Int of int
     | Float of float
+    | Bool of bool
 end
 
 
@@ -70,6 +71,8 @@ let add_int theme id i =
 let add_float theme id f =
   Theme.add id (Attribute.Float f) theme
 
+let add_bool theme id b =
+  Theme.add id (Attribute.Bool b) theme
 
 let get_font theme id =
   match find theme id with
@@ -94,6 +97,11 @@ let get_int theme id =
 let get_float theme id =
   match find theme id with
     | Attribute.Float f -> f
+    | _ -> raise Invalid
+
+let get_bool theme id =
+  match find theme id with
+    | Attribute.Bool b -> b
     | _ -> raise Invalid
 
 (* class theme ~font () =
