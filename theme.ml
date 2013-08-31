@@ -29,6 +29,8 @@ struct
     | Font of OcsfmlGraphics.font
     | Texture of OcsfmlGraphics.texture
     | Color of OcsfmlGraphics.Color.t
+    | IntRect of OcsfmlGraphics.IntRect.t
+    | FloatRect of OcsfmlGraphics.FloatRect.t
     | Int of int
     | Float of float
     | Bool of bool
@@ -38,32 +40,39 @@ end
 
 module Theme = Map.Make(Identifier)
 type t = Attribute.t Theme.t
+type _ attribute_kind = 
+  | Font : OcsfmlGraphics.font attribute_kind
+  | Texture : OcsfmlGraphics.texture attribute_kind
+  | Color : OcsfmlGraphics.Color.t attribute_kind
+  | IntRect : OcsfmlGraphics.IntRect.t attribute_kind
+  | FloatRect : OcsfmlGraphics.FloatRect.t attribute_kind
+  | Int : int attribute_kind
+  | Float : float attribute_kind
+  | Bool : bool attribute_kind
+
 
 exception Invalid
 
-let create () =
-  (ref Theme.empty, Identifier.create ())
+let create () = Theme.empty
 
 let find theme id =
   try Theme.find id theme 
   with Not_found -> raise Invalid
 
-let finalise_font f = f#destroy
-let finalise_texture t = t#destroy
-
 let add_font theme id f =
-  let f' = new OcsfmlGraphics.font (`Copy f) in
-  Gc.finalise finalise_font f' ;
-  Theme.add id (Attribute.Font f') theme
+  Theme.add id (Attribute.Font f) theme
 
-let add_texture theme id (image,rect) =
-  let t' = new OcsfmlGraphics.texture ~rect (`Image image) in
-  t'#set_repeated true ;
-  Gc.finalise finalise_texture t' ;
-  Theme.add id (Attribute.Texture t') theme
+let add_texture theme id t =
+  Theme.add id (Attribute.Texture t) theme
 
 let add_color theme id c =
   Theme.add id (Attribute.Color c) theme
+
+let add_int_rect theme id r =
+  Theme.add id (Attribute.IntRect r) theme
+
+let add_float_rect theme id r =
+  Theme.add id (Attribute.FloatRect r) theme
 
 let add_int theme id i =
   Theme.add id (Attribute.Int i) theme
@@ -74,35 +83,18 @@ let add_float theme id f =
 let add_bool theme id b =
   Theme.add id (Attribute.Bool b) theme
 
-let get_font theme id =
-  match find theme id with
-    | Attribute.Font f -> f
-    | _ -> raise Invalid
-
-let get_texture theme id =
-  match find theme id with
-    | Attribute.Texture t -> t
-    | _ -> raise Invalid
-
-let get_color theme id =
-  match find theme id with
-    | Attribute.Color c -> c
-    | _ -> raise Invalid
-
-let get_int theme id =
-  match find theme id with
-    | Attribute.Int i -> i
-    | _ -> raise Invalid
-
-let get_float theme id =
-  match find theme id with
-    | Attribute.Float f -> f
-    | _ -> raise Invalid
-
-let get_bool theme id =
-  match find theme id with
-    | Attribute.Bool b -> b
-    | _ -> raise Invalid
+let get : type a. t -> Identifier.t -> a attribute_kind -> a =
+              fun theme id kind ->
+                match (kind, find theme id) with
+                  | (Font     , Attribute.Font      f) -> f
+                  | (Texture  , Attribute.Texture   t) -> t
+                  | (Color    , Attribute.Color     c) -> c
+                  | (IntRect  , Attribute.IntRect   r) -> r
+                  | (FloatRect, Attribute.FloatRect r) -> r
+                  | (Int      , Attribute.Int       i) -> i
+                  | (Float    , Attribute.Float     f) -> f
+                  | (Bool     , Attribute.Bool      b) -> b
+                  | _ -> raise Invalid
 
 (* class theme ~font () =
 object(self)

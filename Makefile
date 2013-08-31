@@ -18,13 +18,13 @@ clean:
 	ocamlbuild -clean
 
 install: build
-	ocamlfind install guiocsfml META $(BYTE:%=_build/%) $(NATIVE:%=_build/%)
+	ocamlfind install guiocsfml META $(BYTE:%=_build/%) $(NATIVE:%=_build/%) _build/*.[a,cmi,cmo]
 
 uninstall:
 	ocamlfind remove guiocsfml
 
 test:
-	ocamlbuild -use-ocamlfind Test/test_label.native Test/test_panel.native
+	ocamlbuild -use-ocamlfind Test/test_label.native Test/test_panel.native Test/test_window.native
 
 
 .PHONY: clean

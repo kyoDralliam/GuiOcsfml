@@ -7,18 +7,30 @@ let _ =
 
   let my_themeset = ref (Theme.Set.create ()) in
   
-  let (my_theme, my_theme_id) = Theme.create () in
+  let (my_theme, my_theme_id) = 
+    (ref (Theme.create ()), Theme.Identifier.create ())
+  in
+  let (red_theme, red_theme_id) = 
+    (ref (Theme.create ()), Theme.Identifier.create ())
+  in
 
-  let font = new OcsfmlGraphics.font (`File "Arial.ttf") in
+
+  let font = new font (`File "Arial.ttf") in
   
   my_theme := Theme.add_font !my_theme Theme.GlobalAttribute.font font ;
   my_theme := Theme.add_int !my_theme Theme.GlobalAttribute.character_size 10 ;
   my_theme := Theme.add_color 
-    !my_theme Label.LabelAttribute.text_color (OcsfmlGraphics.Color.white);
+    !my_theme Label.LabelAttribute.text_color (Color.white);
+  my_theme := Theme.add_color
+    !my_theme Panel.PanelAttribute.background_color (Color.white) ;
   my_theme := Button.ButtonAttribute.setup_defaults !my_theme ;
-  font#destroy ;
+
+  red_theme := Theme.add_color
+    !red_theme Panel.PanelAttribute.background_color (Color.rgba 255 0 0 150) ;
+
 
   my_themeset := Theme.Set.add !my_themeset my_theme_id !my_theme ;
+  my_themeset := Theme.Set.add !my_themeset red_theme_id !red_theme ;
 
 
   let label1 = new Label.label ~text:"Hello Gui Ocsfml" my_theme_id in
@@ -64,14 +76,13 @@ let _ =
     ~geometry:(Geometry.create (100., 100.) (400., 130.)) 
     ~dragable:true
     ~child:(hlayout :> Widget.widget)
-    () 
+    my_theme_id
   in
   
   let panel2 = new Panel.panel
     ~geometry:(Geometry.create (10., 10.) (50., 50.))
-    ~background_color:(OcsfmlGraphics.Color.rgba 255 0 0 150)
     ~dragable:true
-    ()
+    red_theme_id
   in
 
   let panels = ref [panel1 ; panel2] in
@@ -82,8 +93,8 @@ let _ =
           match e with
             | Resized { width ; height } ->
                 let width,height = (float width, float height) in
-                let vrect = OcsfmlGraphics.({ left = 0.; top = 0.; width; height}) in
-                let v = new OcsfmlGraphics.view (`Rect vrect) in
+                let vrect = FloatRect.({ left = 0.; top = 0.; width; height}) in
+                let v = new view (`Rect vrect) in
                 app#set_view v 
             | Closed | KeyPressed { code = KeyCode.Escape ; _ } -> app#close
             | _ -> 
@@ -114,4 +125,5 @@ let _ =
         app#display ;
         loop ()
       end
-    in loop ()
+    in loop () ;
+    font#destroy

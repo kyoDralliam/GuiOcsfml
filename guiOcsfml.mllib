@@ -7,3 +7,6 @@ Button
 Layout
 LineEdit
 Panel
+Frame
+Texture3x3
+Texture3x3AttributesIdentifier

@@ -1,3 +1,5 @@
+open OcsfmlGraphics
+
 module LabelAttribute =
 struct
   let text_color = Theme.Attribute.Identifier.create ()
@@ -23,17 +25,17 @@ object(self)
 
   method draw target themeset =
     let theme = Theme.Set.find themeset theme_id in
-    let font = Theme.get_font theme (Theme.GlobalAttribute.font) in
+    let font = Theme.get theme (Theme.GlobalAttribute.font) Theme.Font in
     let character_size = 
-      Theme.get_int theme (Theme.GlobalAttribute.character_size) in
-    let color = Theme.get_color theme (LabelAttribute.text_color) in
+      Theme.get theme (Theme.GlobalAttribute.character_size) Theme.Int in
+    let color = Theme.get theme (LabelAttribute.text_color) Theme.Color in
 
-    let old_view = new OcsfmlGraphics.view (`Copy target#get_view) in
+    let old_view = new view (`Copy target#get_view) in
     let left,top = Geometry.position geometry in
     let width,height = Geometry.size geometry in
 
-    let view = OcsfmlGraphics.(
-      new view (`Rect { left = 0. ; top = 0.; width ; height })
+    let view = (
+      new view FloatRect.(`Rect { left = 0. ; top = 0.; width ; height })
     ) in
     
     let ratioRect = 
@@ -43,12 +45,12 @@ object(self)
       in
       let ratL, ratT = left /. wTarget, top /. hTarget in
       let ratW, ratH = width /. wTarget, height /. hTarget in
-      OcsfmlGraphics.({ left = ratL; top = ratT; width = ratW; height = ratH })
+      FloatRect.({ left = ratL; top = ratT; width = ratW; height = ratH })
     in
     view#set_viewport ratioRect ;
     
     let position = (width /. 2., height /. 2.) in
-    let text = new OcsfmlGraphics.text 
+    let text = new text 
       ~string:text
       ~color
       ~character_size
@@ -56,7 +58,7 @@ object(self)
       ~position () 
     in
     let bounds = text#get_local_bounds in
-    let center = OcsfmlGraphics.(bounds.width /. 2., bounds.height /. 2.) in
+    let center = FloatRect.(bounds.width /. 2., bounds.height /. 2.) in
     text#set_origin_v center ;
     target#set_view view ;
     target#draw text ;

@@ -1,9 +1,11 @@
+open OcsfmlGraphics
+
 class line_edit = 
 object(self)
   inherit Widget.widget (Geometry.create (0.,0.) (100.,20.)) as super
 
   val mutable text = ""
-  val mutable font = new OcsfmlGraphics.font (`File "Arial.ttf")
+  val mutable font = new font (`File "Arial.ttf")
   val mutable cursor = 0
   initializer  Gc.finalise (fun lbl -> lbl#font#destroy) self ;
 
@@ -13,15 +15,15 @@ object(self)
     super#update_geometry area
 
   method draw target themeset =
-    let old_view = new OcsfmlGraphics.view (`Copy target#get_view) in
+    let old_view = new view (`Copy target#get_view) in
     let left,top = Geometry.position geometry in
     let width,height = Geometry.size geometry in
 
     
     let outline_thickness = if focused then Some 1. else None in
-    let box = new OcsfmlGraphics.rectangle_shape
-      ~fill_color:OcsfmlGraphics.Color.white
-      ~outline_color:OcsfmlGraphics.Color.blue
+    let box = new rectangle_shape
+      ~fill_color:Color.white
+      ~outline_color:Color.blue
       ?outline_thickness
       ~position:(left,top)
       ~size:(width,height) ()
@@ -29,8 +31,8 @@ object(self)
     target#draw box ;
 
 
-    let view = OcsfmlGraphics.(
-      new view (`Rect { left = 0. ; top = 0.; width ; height })
+    let view = (
+      new view FloatRect.(`Rect { left = 0. ; top = 0.; width ; height })
     ) in
     
     let ratioRect = 
@@ -40,15 +42,15 @@ object(self)
       in
       let ratL, ratT = left /. wTarget, top /. hTarget in
       let ratW, ratH = width /. wTarget, height /. hTarget in
-      OcsfmlGraphics.({ left = ratL; top = ratT; width = ratW; height = ratH })
+      FloatRect.({ left = ratL; top = ratT; width = ratW; height = ratH })
     in
     view#set_viewport ratioRect ;
     
-    let printable_text = new OcsfmlGraphics.text 
+    let printable_text = new text 
       ~string:text
       ~character_size:10
       ~font:font
-      ~color:OcsfmlGraphics.Color.black () 
+      ~color:Color.black () 
     in
     let (lastX,lastY) = printable_text#find_character_pos cursor in
     let position = 
@@ -57,7 +59,7 @@ object(self)
       else (0., height /. 2.)
     in
     let bounds = printable_text#get_local_bounds in
-    let center = OcsfmlGraphics.(0., bounds.height /. 2.) in
+    let center = (0., bounds.FloatRect.height /. 2.) in
     printable_text#set_position_v position ;
     printable_text#set_origin_v center ;
     target#set_view view ;
@@ -70,8 +72,8 @@ object(self)
         else (lastX, 2.) 
       in
       let size = (1., height -. 2.) in
-      new OcsfmlGraphics.rectangle_shape
-        ~fill_color:OcsfmlGraphics.Color.black
+      new rectangle_shape
+        ~fill_color:Color.black
         ~size
         ~position ()
     in

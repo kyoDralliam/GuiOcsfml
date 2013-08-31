@@ -1,3 +1,4 @@
-<*.*> : package(ocsfml.graphics)
-<Test/*.*> : package(ocsfml.graphics)
+<*.{ml,cm{,x}a}> : package(ocsfml.graphics)
+<texture3x3{,AttributesIdentifier}.{ml,cm{,x}a}> : syntax(camlp4o), package(fieldslib.syntax)
+<Test/*.*> : package(guiocsfml)
 <Test> : include
